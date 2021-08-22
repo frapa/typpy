@@ -15,4 +15,4 @@ def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
 
         return signature.return_annotation
 
-    raise NotImplementedError(f"expression type for {expr} was not yet implemented")
+    raise NotImplementedError(f"expression type for {expr} is not implemented")

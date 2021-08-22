@@ -12,7 +12,7 @@ from typing import Iterable, Generator, Any
 from typy.expression import check_expression
 from typy.resolver import Resolver
 from typy.scope import Scope, parse_scope
-from typy.statement import check_assign
+from typy.statement import check_assignment
 
 
 @dataclass(frozen=True)
@@ -92,8 +92,8 @@ class TypeChecker:
 
         if isinstance(stmt, ast.If):
             check_expression(stmt.test, scope)
-        elif isinstance(stmt, ast.Assign):
-            check_assign(stmt, scope)
+        elif isinstance(stmt, (ast.Assign, ast.AnnAssign)):
+            check_assignment(stmt, scope)
         elif isinstance(stmt, ast.Expr):
             check_expression(stmt.value, scope)
         for sub_stmt in getattr(stmt, "body", []):

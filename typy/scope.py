@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, Optional, Callable
+from typing import Any, Optional, Callable, Type, Dict
 
 
 class Scope:
@@ -15,9 +15,12 @@ class Scope:
         if parent is not None:
             self.qualified_name = f"{parent.qualified_name}.{name}"
 
-        self.variables = {}
-        self.callables = {}
+        self.variables: Dict[str, Type] = {}
         self.types = {}
+        self.callables = {}
+
+    def add_variable(self, name: str, annotation: Type) -> None:
+        self.variables[name] = annotation
 
     def add_callable(self, name: str, obj: Any, cb: inspect.Signature) -> None:
         self.callables[name] = (obj, cb)
@@ -31,6 +34,11 @@ class Scope:
         return cb
 
     def __str__(self) -> str:
+        if self.variables:
+            variables = "\n    " + ",\n    ".join(self.variables.keys()) + "\n  "
+        else:
+            variables = ""
+
         if self.callables:
             callables = "\n    " + ",\n    ".join(self.callables.keys()) + "\n  "
         else:
@@ -38,7 +46,7 @@ class Scope:
 
         return (
             f"<Scope '{self.qualified_name}'\n"
-            f"  variable=[]\n"
+            f"  variable=[{variables}]\n"
             f"  types=[]\n"
             f"  callables=[{callables}]\n"
             f">"
@@ -54,7 +62,7 @@ def parse_scope(
     scope = Scope(container.__name__, parent_scope)
 
     for symbol, obj in container.__dict__.items():
-        if isinstance(obj, Callable):
+        if isinstance(obj, Callable) and hasattr(obj, "__name__"):
             signature = inspect.signature(obj)
             scope.add_callable(obj.__name__, obj, signature)
 
