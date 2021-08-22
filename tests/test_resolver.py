@@ -14,7 +14,7 @@ def resolver_case_dir(cases_dir: Path) -> Path:
     return cases_dir / "resolver"
 
 
-@dataclass
+@dataclass(frozen=True)
 class ResolverTestCase:
     case_id: str
     path: Path
@@ -85,7 +85,7 @@ def test_resolver(
     importlib.import_module(qualified_name)
 
 
-@dataclass
+@dataclass(frozen=True)
 class ResolverErrorTestCase:
     case_id: str
     path: Path
