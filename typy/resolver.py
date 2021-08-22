@@ -1,6 +1,6 @@
+from functools import lru_cache
 from pathlib import Path
 from typing import Tuple
-from functools import lru_cache
 
 
 class Resolver:
@@ -26,15 +26,16 @@ class Resolver:
             the outermost package.
         """
         if _check_path:
+            if path.suffix:
+                # A file bust be a python source file
+                assert path.suffix == ".py"
+
             # Check that the path is importable. If not, it should
             # not have been passed here to be resolved and indicates
             # a bug elsewhere.
-            if path.is_dir():
+            if path.suffix != ".py" and path.is_dir():
                 # A directory should contain a __init__.py file
                 assert self.is_package(path)
-            else:
-                # A file bust be a python source file
-                assert path.suffix == ".py"
 
         if not self.is_package(path.parent):
             # We reached the folder containing the outermost package

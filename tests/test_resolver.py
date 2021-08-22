@@ -1,8 +1,7 @@
 import importlib
-from pathlib import Path, _PosixFlavour
 from dataclasses import dataclass
-from typing import Type, Callable
-from functools import partial
+from pathlib import Path
+from typing import Type
 
 import pytest
 
@@ -161,8 +160,8 @@ def test_caching(resolver_case_dir: Path, system_calls: Counter) -> None:
     assert system_calls.count == 0
 
     resolver.resolve(resolver_case_dir / "pkg" / "subpkg" / "submod.py")
-    assert system_calls.count == 4
+    assert system_calls.count == 3
 
     system_calls.reset_count()
     resolver.resolve(resolver_case_dir / "pkg" / "subpkg" / "submod2.py")
-    assert system_calls.count == 1
+    assert system_calls.count == 0
