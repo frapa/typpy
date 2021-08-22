@@ -136,15 +136,29 @@ For the case of standalone scripts, the fully qualified
 name is simply the file name, so the import algorithm works 
 also in that case.
 
-Typy evaluates the modules using the python interpreter
+Typy should evaluate the modules using the python interpreter
 to be able to resolve dynamic situations such as decorators
 adding methods to classes.
 
-## Problems
+Typy should automatically filter only `.py` files from the 
+list of files that have been passed as input. This avoids
+trying to resolve non-python files.
+
+### Efficiency
+
+Reading and resolving large amounts of files can be time-consuming,
+especially in environments with slow I/O or on laptops with antivirus
+software. Typy should avoid hitting the filesystem whenever possible.
+
+When checking files in a package, it often happens that the same package
+folder has to be resolved again and again. Typy should cache the package
+folders to avoid too many system calls.
+
+### Problems
 
 *Note:* For these it is necessary to have test cases.
 
-### Accidental ambiguous import
+#### Accidental ambiguous import
 
 This might happen when we have a folder like this
 
@@ -172,9 +186,9 @@ anymore if we want to import `json.py` or the standard library
 This does not only affect typy but also simply running
 `python script.py` form the `script` folder will be ambiguous.
 
-In this case, typy behaves like the python interpreter.
+In this case, typy should behave like the python interpreter.
 
-### Modules
+#### Modules
 
 Since type evaluates the modules it checks, if the modules contain
 instructions on the global scope. These instructions will be
