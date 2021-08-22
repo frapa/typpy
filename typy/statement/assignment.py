@@ -19,9 +19,6 @@ def check_assignment(
         new_errors = _check_annotated_assignment(stmt, scope)
 
     errors.extend(new_errors)
-
-    print(stmt)
-
     return errors
 
 
@@ -46,14 +43,15 @@ def _check_annotated_assignment(stmt: ast.AnnAssign, scope: Scope) -> List[Typin
             f"assignment for target {stmt.target} is not implemented"
         )
 
+    assert isinstance(stmt.annotation, ast.Name)
     annotation = eval(stmt.annotation.id)
     _type = get_expr_type(stmt.value, scope)
     if annotation != _type:
         return [
             TypingError(
                 file=Path(),
-                line_number=0,
-                column_number=0,
+                line_number=stmt.lineno,
+                column_number=stmt.col_offset,
                 message=(
                     f"Expected '{fmt_type(annotation)}' in assignment, "
                     f"found '{fmt_type(_type)}'"
