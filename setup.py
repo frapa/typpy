@@ -8,4 +8,7 @@ setup(
     author_email="francescopasa@gmail.com",
     url="https://github.com/frapa/typy",
     packages=["typy"],
+    package_data={
+        "typy": ["py.typed"],
+    },
 )
