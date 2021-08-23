@@ -33,7 +33,7 @@ class CheckAssignmentTestCase(CheckTestCase):
         code="var = True",
         variables=dict(var=int),
         errors=[
-            "Expected 'int' in assignment, found 'bool'.",
+            "Expected 'int' in assignment to 'var', found 'bool'.",
         ],
     ),
     CheckAssignmentTestCase(
@@ -45,6 +45,13 @@ class CheckAssignmentTestCase(CheckTestCase):
         case_id="destructuring_assignment",
         code="var1, var2 = (1, 2.0)",
         variables=dict(var1=int, var2=float),
+    ),
+    CheckAssignmentTestCase(
+        case_id="destructuring_assignment_error",
+        pre_code="var1, var2 = (1, 2.0)",
+        code="var1, var3 = (True, 'string')",
+        variables=dict(var1=int, var2=float),
+        errors=["Expected 'int' in assignment to 'var1', found 'bool'."],
     ),
     CheckAssignmentTestCase(
         case_id="annotated_constant_assignment",
@@ -59,7 +66,7 @@ class CheckAssignmentTestCase(CheckTestCase):
     CheckAssignmentTestCase(
         case_id="annotated_constant_assignment_error",
         code="var: int = 'string'",
-        errors=["Expected 'int' in assignment, found 'str'."],
+        errors=["Expected 'int' in assignment to 'var', found 'str'."],
     ),
 )
 def test_check_assignment(scope: Scope, case: CheckAssignmentTestCase) -> None:

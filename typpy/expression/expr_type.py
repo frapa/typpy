@@ -1,5 +1,5 @@
 import ast
-from typing import Type
+from typing import Type, Tuple
 
 from typpy.scope import Scope
 
@@ -14,5 +14,8 @@ def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
             pass
 
         return signature.return_annotation
+    elif isinstance(expr, ast.Tuple):
+        types = [get_expr_type(elt, scope) for elt in expr.elts]
+        return Tuple[tuple(types)]
 
     raise NotImplementedError(f"expression type for {expr} is not implemented")

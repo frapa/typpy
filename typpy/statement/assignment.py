@@ -28,14 +28,24 @@ def _check_plain_assignment(stmt: ast.Assign, scope: Scope) -> List[TypingError]
             _type = get_expr_type(stmt.value, scope)
             if annotation is not None and annotation != _type:
                 message = (
-                    f"Expected '{fmt_type(annotation)}' in assignment, "
+                    f"Expected '{fmt_type(annotation)}' in assignment to '{target.id}', "
                     f"found '{fmt_type(_type)}'."
                 )
                 return [TypingError.from_scope_stmt(scope, stmt, message)]
 
             scope.add_variable(target.id, _type)
         elif isinstance(target, ast.Tuple):
-            print(target.elts)
+            _type = get_expr_type(stmt.value, scope)
+            for elt, elt_type in zip(target.elts, _type.__args__):
+                annotation = scope.resolve_variable(elt.id)
+                if annotation is not None and annotation != elt_type:
+                    message = (
+                        f"Expected '{fmt_type(annotation)}' in assignment to '{elt.id}', "
+                        f"found '{fmt_type(elt_type)}'."
+                    )
+                    return [TypingError.from_scope_stmt(scope, stmt, message)]
+
+                scope.add_variable(elt.id, elt_type)
         else:
             raise NotImplementedError(
                 f"assignment for target {target} is not implemented"
@@ -50,12 +60,12 @@ def _check_annotated_assignment(stmt: ast.AnnAssign, scope: Scope) -> List[Typin
             f"assignment for target {stmt.target} is not implemented"
         )
 
-    assert isinstance(stmt.annotation, ast.Name)
+    assert isinstance(stmt.annotation, ast.Name), stmt
     annotation = eval(stmt.annotation.id)
     _type = get_expr_type(stmt.value, scope)
     if annotation != _type:
         message = (
-            f"Expected '{fmt_type(annotation)}' in assignment, "
+            f"Expected '{fmt_type(annotation)}' in assignment to '{stmt.target.id}', "
             f"found '{fmt_type(_type)}'."
         )
         return [TypingError.from_scope_stmt(scope, stmt, message)]
