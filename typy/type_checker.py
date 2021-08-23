@@ -60,7 +60,9 @@ class TypeChecker:
     def _check_file(self, path: Path) -> List[TypingError]:
         with self.import_module(path) as module:
             scope = parse_scope(module.module)
+            # TODO: better way to bootstrap?
             # Bootstrap scope qualified name
+            scope.file = path
             scope.qualified_name = module.qualified_name
             return self._check_scope_typing(module.module, scope)
 

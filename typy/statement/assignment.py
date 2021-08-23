@@ -1,5 +1,4 @@
 import ast
-from pathlib import Path
 from typing import List, Union
 
 from typy.error import TypingError
@@ -25,7 +24,15 @@ def check_assignment(
 def _check_plain_assignment(stmt: ast.Assign, scope: Scope) -> List[TypingError]:
     for target in stmt.targets:
         if isinstance(target, ast.Name):
+            annotation = scope.resolve_variable(target.id)
             _type = get_expr_type(stmt.value, scope)
+            if annotation is not None and annotation != _type:
+                message = (
+                    f"Expected '{fmt_type(annotation)}' in assignment, "
+                    f"found '{fmt_type(_type)}'."
+                )
+                return [TypingError.from_scope_stmt(scope, stmt, message)]
+
             scope.add_variable(target.id, _type)
         # elif isinstance(target, ast.Tuple):
         #     ...
@@ -47,17 +54,11 @@ def _check_annotated_assignment(stmt: ast.AnnAssign, scope: Scope) -> List[Typin
     annotation = eval(stmt.annotation.id)
     _type = get_expr_type(stmt.value, scope)
     if annotation != _type:
-        return [
-            TypingError(
-                file=Path(),
-                line_number=stmt.lineno,
-                column_number=stmt.col_offset,
-                message=(
-                    f"Expected '{fmt_type(annotation)}' in assignment, "
-                    f"found '{fmt_type(_type)}'"
-                ),
-            )
-        ]
+        message = (
+            f"Expected '{fmt_type(annotation)}' in assignment, "
+            f"found '{fmt_type(_type)}'."
+        )
+        return [TypingError.from_scope_stmt(scope, stmt, message)]
 
     scope.add_variable(stmt.target.id, _type)
 

@@ -1,5 +1,8 @@
+import ast
 from dataclasses import dataclass
 from pathlib import Path
+
+from typy.scope import Scope
 
 
 @dataclass(frozen=True)
@@ -8,3 +11,17 @@ class TypingError:
     line_number: int
     column_number: int
     message: str
+
+    @classmethod
+    def from_scope_stmt(
+        cls,
+        scope: Scope,
+        stmt: ast.stmt,
+        message: str,
+    ) -> "TypingError":
+        return cls(
+            file=scope.file,
+            line_number=stmt.lineno,
+            column_number=stmt.col_offset,
+            message=message,
+        )

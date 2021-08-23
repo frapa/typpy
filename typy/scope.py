@@ -11,8 +11,10 @@ class Scope:
         self.name = name
         self.parent = parent
 
+        self.file = None
         self.qualified_name = None
         if parent is not None:
+            self.file = parent.file
             self.qualified_name = f"{parent.qualified_name}.{name}"
 
         self.variables: Dict[str, Type] = {}
@@ -21,6 +23,13 @@ class Scope:
 
     def add_variable(self, name: str, annotation: Type) -> None:
         self.variables[name] = annotation
+
+    def resolve_variable(self, name: str) -> Optional[Type]:
+        annotation = self.variables.get(name, None)
+        if annotation is None and self.parent is not None:
+            annotation = self.parent.resolve_variable(name)
+
+        return annotation
 
     def add_callable(self, name: str, obj: Any, cb: inspect.Signature) -> None:
         self.callables[name] = (obj, cb)
