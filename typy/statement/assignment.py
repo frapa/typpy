@@ -34,8 +34,8 @@ def _check_plain_assignment(stmt: ast.Assign, scope: Scope) -> List[TypingError]
                 return [TypingError.from_scope_stmt(scope, stmt, message)]
 
             scope.add_variable(target.id, _type)
-        # elif isinstance(target, ast.Tuple):
-        #     ...
+        elif isinstance(target, ast.Tuple):
+            print(target.elts)
         else:
             raise NotImplementedError(
                 f"assignment for target {target} is not implemented"

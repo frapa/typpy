@@ -4,8 +4,6 @@ from typing import List, TypeVar
 
 import pytest
 
-from typy.error import TypingError
-
 
 def ast_parse_stmt(code: str) -> ast.stmt:
     stmt = ast.parse(code).body[0]
@@ -34,7 +32,7 @@ def ast_parse_call(code: str) -> ast.Call:
 class CheckTestCase:
     case_id: str
     code: str
-    errors: List[TypingError] = field(default_factory=list)
+    errors: List[str] = field(default_factory=list)
 
 
 T = TypeVar("T")

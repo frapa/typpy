@@ -1,9 +1,9 @@
 # Typy - Python Type Checker
 
 Typy is an experimental type checker for Python. It's similar to mypy,
-but instead of statically checking the code, it dynamically imports the modules
-and is therefore able to perform type check that mypy is unable to do.
-This particularly includes decorated classes and functions.
+but instead of statically checking the code, it dynamically imports the
+modules and is therefore able to perform type check that mypy is unable
+to perform. This particularly includes decorated classes and functions.
 
 ## Requirements
 

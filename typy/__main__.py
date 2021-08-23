@@ -9,7 +9,9 @@ from typy.type_checker import TypeChecker
 
 
 # TODO: test, docstring
-def run(args: List[str]) -> None:
+def run(args: List[str] = None) -> None:
+    args = args or sys.argv
+
     logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
 
     # TODO: move to proper function
