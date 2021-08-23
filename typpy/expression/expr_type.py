@@ -1,7 +1,7 @@
 import ast
 from typing import Type
 
-from typy.scope import Scope
+from typpy.scope import Scope
 
 
 def get_expr_type(expr: ast.expr, scope: Scope) -> Type:

@@ -10,14 +10,14 @@ ROOT = Path(__file__).parent
 @task
 def lint(ctx):
     """Lint code."""
-    ctx.run("black --check typy tests --exclude tests/cases/sqlalchemy")
-    ctx.run("flake8 typy tests --exclude tests/cases/sqlalchemy --max-line-length 88")
+    ctx.run("black --check typpy tests --exclude tests/cases/sqlalchemy")
+    ctx.run("flake8 typpy tests --exclude tests/cases/sqlalchemy --max-line-length 88")
 
 
 @task
 def format_code(ctx):
     """Format code."""
-    ctx.run("black typy tests --exclude tests/cases/sqlalchemy")
+    ctx.run("black typpy tests --exclude tests/cases/sqlalchemy")
 
 
 @task
@@ -91,7 +91,7 @@ def publish(ctx, token):
     ctx.run("python setup.py sdist bdist_wheel")
     ctx.run("twine check dist/*")
     ctx.run(
-        f"twine upload --repository-url https://pypi.org/legacy/ dist/* "
+        f"twine upload --repository-url https://upload.pypi.org/legacy/ dist/* "
         f"-u __token__ -p {token}"
     )
 

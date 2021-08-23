@@ -1,7 +1,7 @@
 import sys
 from typing import List
 
-from typy.error import TypingError
+from typpy.error import TypingError
 
 
 # TODO: tests

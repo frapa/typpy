@@ -5,8 +5,8 @@ from typing import Type
 
 import pytest
 
-from typy import resolver
-from typy.resolver import Resolver
+from typpy import resolver
+from typpy.resolver import Resolver
 
 
 @pytest.fixture

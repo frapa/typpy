@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from typy import run
+from typpy import run
 
 
 def test_performance(cases_dir: Path) -> None:
-    """Run typy on the source code of a large library (SQLAlchemy)
+    """Run typpy on the source code of a large library (SQLAlchemy)
     and see how it performs.
 
     SQLAlchemy summary:
@@ -17,4 +17,4 @@ def test_performance(cases_dir: Path) -> None:
     SUM:                           236          37104          46329          96816
     -------------------------------------------------------------------------------
     """
-    run(["typy", str(cases_dir / "sqlalchemy" / "./**/*.py")])
+    run(["typpy", str(cases_dir / "sqlalchemy" / "./**/*.py")])

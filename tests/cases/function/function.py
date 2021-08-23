@@ -1,5 +1,5 @@
 # This one is also callable, but is not a function.
-# typy should ignore this when
+# typpy should ignore this when
 class ExampleClass:
     ...
 

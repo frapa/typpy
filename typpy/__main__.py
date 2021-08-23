@@ -3,9 +3,9 @@ import os
 import sys
 from typing import List
 
-from typy.discover_files import find_files
-from typy.output import print_errors
-from typy.type_checker import TypeChecker
+from typpy.discover_files import find_files
+from typpy.output import print_errors
+from typpy.type_checker import TypeChecker
 
 
 # TODO: test, docstring

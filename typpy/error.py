@@ -2,7 +2,7 @@ import ast
 from dataclasses import dataclass
 from pathlib import Path
 
-from typy.scope import Scope
+from typpy.scope import Scope
 
 
 @dataclass(frozen=True)

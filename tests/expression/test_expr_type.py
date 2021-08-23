@@ -3,8 +3,8 @@ from typing import Type, Any
 
 import pytest
 
-from typy.expression import get_expr_type
-from typy.scope import Scope, parse_scope
+from typpy.expression import get_expr_type
+from typpy.scope import Scope, parse_scope
 from ..utils import ast_parse_expr
 
 

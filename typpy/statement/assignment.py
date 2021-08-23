@@ -1,10 +1,10 @@
 import ast
 from typing import List, Union
 
-from typy.error import TypingError
-from typy.expression import check_expression, get_expr_type
-from typy.format import fmt_type
-from typy.scope import Scope
+from typpy.error import TypingError
+from typpy.expression import check_expression, get_expr_type
+from typpy.format import fmt_type
+from typpy.scope import Scope
 
 
 def check_assignment(

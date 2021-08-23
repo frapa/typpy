@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from typy.type_checker import TypeChecker
+from typpy.type_checker import TypeChecker
 
 
 def test_check_typing(cases_dir: Path) -> None:

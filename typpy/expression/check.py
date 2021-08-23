@@ -2,9 +2,9 @@ import ast
 import logging
 from typing import List
 
-# from typy.expression.call import check_call
-from typy.error import TypingError
-from typy.scope import Scope
+# from typpy.expression.call import check_call
+from typpy.error import TypingError
+from typpy.scope import Scope
 
 
 def check_expression(expr: ast.expr, scope: Scope) -> List[TypingError]:

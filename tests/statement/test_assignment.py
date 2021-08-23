@@ -3,8 +3,8 @@ from typing import Any, Optional, Dict, Type
 
 import pytest
 
-from typy.scope import Scope, parse_scope
-from typy.statement import check_assignment
+from typpy.scope import Scope, parse_scope
+from typpy.statement import check_assignment
 from ..utils import ast_parse_assignment, CheckTestCase, parametrize_case
 
 

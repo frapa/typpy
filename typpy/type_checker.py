@@ -9,11 +9,11 @@ from importlib import import_module
 from pathlib import Path
 from typing import Iterable, Generator, Any, List
 
-from typy.error import TypingError
-from typy.expression import check_expression
-from typy.resolver import Resolver
-from typy.scope import Scope, parse_scope
-from typy.statement import check_assignment
+from typpy.error import TypingError
+from typpy.expression import check_expression
+from typpy.resolver import Resolver
+from typpy.scope import Scope, parse_scope
+from typpy.statement import check_assignment
 
 
 @dataclass(frozen=True)

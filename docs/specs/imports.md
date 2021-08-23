@@ -1,15 +1,15 @@
-# Typy and imports
+# Typpy and imports
 
-This spec defines how typy handles importing files
+This spec defines how typpy handles importing files
 and resolves imports.
 
 ## Background
 
-Typy takes as input a list of files to type check. Even when
-the input is defined with wildcard patterns, typy internally
+Typpy takes as input a list of files to type check. Even when
+the input is defined with wildcard patterns, typpy internally
 generates a list of files to type check.
 
-To effectively check a file, typy must know the signatures
+To effectively check a file, typpy must know the signatures
 of imported symbols, and thus must be able to resolve imports.
 
 ## Definitions
@@ -49,7 +49,7 @@ my_project/
   ...
 ```
 
-Then imagine that typy is instructed to type check all python
+Then imagine that typpy is instructed to type check all python
 files in the package (e.g. `my_package/**/*.py`).
 
 In this scenario, files would import other files from the same package,
@@ -58,11 +58,11 @@ subpackages or the parent packages in one of the following ways:
 - `from <package>.<file> import <symbol>` (or equivalent syntax).
   In this case, the folder containing the package (i.e. `my_project`)
   must be added to path. Note that this folder might not be the
-  current working directory where typy has been invoked. This
+  current working directory where typpy has been invoked. This
   would work even if the file is imported standalone.
 - `from .<file> import <symbol>` (or equivalent syntax).
   This case is similar to the one above, but the file must be
-  imported by typy using the package syntax and not standalone.
+  imported by typpy using the package syntax and not standalone.
 - `from my_subpackage.<file> import <symbol>` (or equivalent syntax).
   Same remark as above.
 - `from ..<file> import <symbol>` (or equivalent syntax).
@@ -104,7 +104,7 @@ The difference with the case above is that also `file1.py` has to be
 type checked. This file can be simply checked as a standalone script
 or module as in the scenario above.
 
-Thus `typy` needs to be able to mix and match both import types.
+Thus `typpy` needs to be able to mix and match both import types.
 
 ### Import of external packages
 
@@ -118,16 +118,16 @@ def get_books() -> List[Book]:
     ...
 ```
 
-In this case, typy must be able to resolve `requests.get`.
-For this to happen, typy must be run in an environment
+In this case, typpy must be able to resolve `requests.get`.
+For this to happen, typpy must be run in an environment
 (e.g. a virtualenv) where the `requests` library is installed.
 
 All external imports are resolved as package imports.
 
 ## Specification
 
-Typy should generate a list of files to type check.
-For each file (e.g. `pkg/subpkg/file.py`), typy will
+Typpy should generate a list of files to type check.
+For each file (e.g. `pkg/subpkg/file.py`), typpy will
 try to determine a fully qualified name (e.g. `pkg.subpkg.file`).
 The directory containing the package is then added to
 the search path.
@@ -136,11 +136,11 @@ For the case of standalone scripts, the fully qualified
 name is simply the file name, so the import algorithm works 
 also in that case.
 
-Typy should evaluate the modules using the python interpreter
+Typpy should evaluate the modules using the python interpreter
 to be able to resolve dynamic situations such as decorators
 adding methods to classes.
 
-Typy should automatically filter only `.py` files from the 
+Typpy should automatically filter only `.py` files from the 
 list of files that have been passed as input. This avoids
 trying to resolve non-python files.
 
@@ -148,10 +148,10 @@ trying to resolve non-python files.
 
 Reading and resolving large amounts of files can be time-consuming,
 especially in environments with slow I/O or on laptops with antivirus
-software. Typy should avoid hitting the filesystem whenever possible.
+software. Typpy should avoid hitting the filesystem whenever possible.
 
 When checking files in a package, it often happens that the same package
-folder has to be resolved again and again. Typy should cache the package
+folder has to be resolved again and again. Typpy should cache the package
 folders to avoid too many system calls.
 
 ### Problems
@@ -177,16 +177,16 @@ import json
 ...
 ```
 
-Assuming that typy has been called from `folder`,
+Assuming that typpy has been called from `folder`,
 adding the script parent folder (e.g. `scripts`) to `sys.path`
 will cause the import to become ambiguous (we cannot determine
 anymore if we want to import `json.py` or the standard library
 `json` module).
 
-This does not only affect typy but also simply running
+This does not only affect typpy but also simply running
 `python script.py` form the `script` folder will be ambiguous.
 
-In this case, typy should behave like the python interpreter.
+In this case, typpy should behave like the python interpreter.
 
 #### Modules
 
@@ -200,7 +200,7 @@ import shutil
 shutil.rmtree("my_dir")
 ```
 
-cannot be safely executed by typy, without as a side effect deleting
+cannot be safely executed by typpy, without as a side effect deleting
 `my_dir` and its content. This is different from other type chekers
 such as mypy. In such cases, we suggest that the authors wrap their
 scripts in a `if __name__ == "__main__":` guard.

@@ -1,6 +1,6 @@
-from typing import List, Iterable
-from pathlib import Path
 from glob import glob
+from pathlib import Path
+from typing import List, Iterable
 
 
 # TODO: test, docstring
