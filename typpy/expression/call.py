@@ -22,7 +22,7 @@ class Arg:
 
 
 def check_call(expr: ast.Call, scope: Scope) -> List[TypingError]:
-    signature = scope.resolve_callable(expr.func.id)
+    _, signature = scope.resolve_callable(expr.func.id)
     if signature is None:
         # TODO: error reporting
         pass

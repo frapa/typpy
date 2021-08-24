@@ -15,3 +15,8 @@ the standard library.
 ```bash
 typpy path/to/file.py
 ```
+
+## Status
+
+Currently, typpy is still in a very early stage and only support a limited
+number of type checks. 

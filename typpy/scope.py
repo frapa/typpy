@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, Optional, Callable, Type, Dict
+from typing import Any, Optional, Type, Dict, Tuple
 
 
 class Scope:
@@ -34,30 +34,28 @@ class Scope:
     def add_callable(self, name: str, obj: Any, cb: inspect.Signature) -> None:
         self.callables[name] = (obj, cb)
 
-    def resolve_callable(self, name: str) -> Optional[inspect.Signature]:
-        _, cb = self.callables.get(name, (None, None))
+    def resolve_callable(self, name: str) -> Optional[Tuple[Any, inspect.Signature]]:
+        obj, cb = self.callables.get(name, (None, None))
 
         if cb is None and self.parent is not None:
             return self.parent.resolve_callable(name)
 
-        return cb
+        return obj, cb
+
+    @staticmethod
+    def _format_dict(dictionary: Dict[str, Any]) -> str:
+        if dictionary:
+            items = ",\n    ".join(dictionary.keys())
+            return f"\n    {items}\n  "
+
+        return ""
 
     def __str__(self) -> str:
-        if self.variables:
-            variables = "\n    " + ",\n    ".join(self.variables.keys()) + "\n  "
-        else:
-            variables = ""
-
-        if self.callables:
-            callables = "\n    " + ",\n    ".join(self.callables.keys()) + "\n  "
-        else:
-            callables = ""
-
         return (
             f"<Scope '{self.qualified_name}'\n"
-            f"  variable=[{variables}]\n"
+            f"  variable=[{self._format_dict(self.variables)}]\n"
             f"  types=[]\n"
-            f"  callables=[{callables}]\n"
+            f"  callables=[{self._format_dict(self.callables)}]\n"
             f">"
         )
 
@@ -71,8 +69,20 @@ def parse_scope(
     scope = Scope(container.__name__, parent_scope)
 
     for symbol, obj in container.__dict__.items():
-        if isinstance(obj, Callable) and hasattr(obj, "__name__"):
+        if callable(obj):
             signature = inspect.signature(obj)
-            scope.add_callable(obj.__name__, obj, signature)
+
+            if hasattr(obj, "__name__"):
+                name = obj.__name__
+            # This if for objects from the typing module,
+            # such as Optional
+            elif hasattr(obj, "_name"):
+                name = obj._name
+            else:
+                raise NotImplementedError(
+                    f"name retrieval for callable '{obj}' is not implemented"
+                )
+
+            scope.add_callable(name, obj, signature)
 
     return scope

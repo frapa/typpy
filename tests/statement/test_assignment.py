@@ -1,16 +1,18 @@
 from dataclasses import dataclass, field
-from typing import Any, Optional, Dict, Type
+from typing import Any, Optional, Dict, Type, Union
 
 import pytest
 
 from typpy.scope import Scope, parse_scope
 from typpy.statement import check_assignment
+from typpy.is_subtype import is_subtype
 from ..utils import ast_parse_assignment, CheckTestCase, parametrize_case
 
 
 @pytest.fixture
 def scope(namespace: Any) -> Scope:
     namespace.Optional = Optional
+    namespace.Union = Union
 
     return parse_scope(namespace)
 
@@ -59,9 +61,19 @@ class CheckAssignmentTestCase(CheckTestCase):
         variables=dict(var=int),
     ),
     CheckAssignmentTestCase(
-        case_id="annotated_constant_assignment_none",
+        case_id="annotated_constant_assignment_optional",
+        code="var: Optional[int] = 123",
+        variables=dict(var=Optional[int]),
+    ),
+    CheckAssignmentTestCase(
+        case_id="annotated_constant_assignment_optional_none",
         code="var: Optional[int] = None",
         variables=dict(var=Optional[int]),
+    ),
+    CheckAssignmentTestCase(
+        case_id="annotated_constant_assignment_union",
+        code="var: Union[int, str] = 'string'",
+        variables=dict(var=Union[int, str]),
     ),
     CheckAssignmentTestCase(
         case_id="annotated_constant_assignment_error",
@@ -81,4 +93,4 @@ def test_check_assignment(scope: Scope, case: CheckAssignmentTestCase) -> None:
 
     # Check that new variables have been added to the scope
     for var, _type in case.variables.items():
-        assert scope.variables[var] == _type
+        assert is_subtype(scope.variables[var], _type)
