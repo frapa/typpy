@@ -137,14 +137,12 @@ def system_calls(monkeypatch: pytest.MonkeyPatch) -> Counter:
     original_is_dir = Path.is_dir
 
     def is_dir(*args):
-        print("is_dir()", *args)
         counter.increment()
         return original_is_dir(*args)
 
     original_exists = Path.exists
 
     def exists(*args):
-        print("exists()", *args)
         counter.increment()
         return original_exists(*args)
 
