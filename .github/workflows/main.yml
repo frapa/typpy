@@ -17,9 +17,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Lint
         run: |
-          pip install invoke -r requirements-dev.txt
+          pip install -r requirements-dev.txt
           invoke lint
-        
+
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -32,5 +32,5 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Test
         run: |
-          pip install invoke -r requirements-dev.txt
+          pip install -r requirements-dev.txt
           invoke test
