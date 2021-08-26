@@ -1,5 +1,7 @@
 # Typpy - Python Type Checker
 
+![example workflow](https://github.com/frapa/typpy/actions/workflows/main.yml/badge.svg)
+
 Typpy is an experimental type checker for Python. It's similar to mypy,
 but instead of statically checking the code, it dynamically imports the
 modules and is therefore able to perform type check that mypy is unable
