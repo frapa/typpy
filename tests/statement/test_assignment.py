@@ -29,13 +29,20 @@ class CheckAssignmentTestCase(CheckTestCase):
         code="var = 1",
         variables=dict(var=int),
     ),
+    # bool is a subclass of int
+    CheckAssignmentTestCase(
+        case_id="constant_assignment_int_bool",
+        pre_code="var = 2",
+        code="var = False",
+        variables=dict(var=int),
+    ),
     CheckAssignmentTestCase(
         case_id="constant_assignment_error",
-        pre_code="var = 1",
-        code="var = True",
-        variables=dict(var=int),
+        pre_code="var = True",
+        code="var = 1",
+        variables=dict(var=bool),
         errors=[
-            "Expected 'int' in assignment to 'var', found 'bool'.",
+            "Expected 'bool' in assignment to 'var', found 'int'.",
         ],
     ),
     CheckAssignmentTestCase(
