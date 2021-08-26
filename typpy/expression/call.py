@@ -1,3 +1,5 @@
+# flake8: noqa
+
 import ast
 import inspect
 from typing import List, Type
