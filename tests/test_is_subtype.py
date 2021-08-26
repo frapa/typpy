@@ -4,6 +4,7 @@ from typing import Type, Tuple, Optional, Union, Any
 import pytest
 
 from typpy.is_subtype import is_subtype
+from tests.utils import eval_if_3_9
 
 
 def type_name(_type: Optional[Type]) -> str:
@@ -15,7 +16,10 @@ def type_name(_type: Optional[Type]) -> str:
     if hasattr(_type, "_name"):
         return str(_type).replace("typing.", "")
 
-    return _type.__name__
+    if "<class" in str(_type):
+        return _type.__name__
+
+    return str(_type)
 
 
 @dataclass(frozen=True)
@@ -55,14 +59,20 @@ class IsSubtypeTestCase:
         IsSubtypeTestCase(Any, Any, True),
         # Tuples
         IsSubtypeTestCase(Tuple[int, float], Tuple[int, float], True),
+        *eval_if_3_9("IsSubtypeTestCase(tuple[int, float], Tuple[int, float], True)"),
+        IsSubtypeTestCase(Tuple[int, float], Tuple[float, float], True),
         IsSubtypeTestCase(Tuple[int, str], Tuple[int, float], False),
+        IsSubtypeTestCase(Tuple[int, str], int, False),
         # Union types
+        IsSubtypeTestCase(Optional[int], Optional[int], True),
         IsSubtypeTestCase(None, Optional[int], True),
         IsSubtypeTestCase(int, Optional[int], True),
+        IsSubtypeTestCase(Optional[int], int, False),
         IsSubtypeTestCase(int, Union[int, float, bytes], True),
         IsSubtypeTestCase(str, Union[int, float, bytes], False),
         IsSubtypeTestCase(Union[float, bytes], Union[int, float, bytes], True),
         IsSubtypeTestCase(Union[str, bytes], Union[int, float, bytes], False),
+        IsSubtypeTestCase(Union[str, bytes], int, False),
         # Since is a subclass if float, it should be accepted
         IsSubtypeTestCase(bool, Union[float, bytes], True),
     ],

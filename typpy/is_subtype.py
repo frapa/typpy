@@ -16,7 +16,9 @@ def is_subtype(act_type: Optional[Type], exp_type: Optional[Type]) -> bool:
     # if the expected type is Any, the result is always True
     if exp_type is Any:
         return True
-    # For numeric types, we follow PEP 484
+    # For numeric types, we follow PEP 484, and not
+    # the class hierarchy (e.g. issubclass(int, float)
+    # is False but we return True)
     elif exp_type is float and act_type in (int, bool):
         return True
     elif exp_type is complex and act_type in (float, int, bool):
@@ -28,18 +30,19 @@ def is_subtype(act_type: Optional[Type], exp_type: Optional[Type]) -> bool:
         # such as Optional or Union
         if exp_origin_type is Union:
             return _check_union(act_type, exp_type)
-        elif exp_origin_type is Tuple:
-            return _check_union(act_type, exp_t)
+        elif exp_origin_type in (Tuple, tuple):
+            return _check_tuple(act_type, exp_type)
     elif isclass(act_type):
         return issubclass(act_type, exp_type)
     else:
-        if issubclass(act_type, Tuple):
-            return _check_tuple(act_type, exp_type)
+        # This happens when act_type is a Tuple or Union
+        # and ext_type is not. This is always False.
+        return False
 
     raise NotImplementedError(f"is_subtype() for type {exp_type} is not implemented")
 
 
-def _check_union(act_type: Type, exp_type: Type) -> bool:
+def _check_union(act_type: Type, exp_type: Union) -> bool:
     # If the act_type is an Union, check that act_type is a subset
     if getattr(act_type, "__origin__", None) is Union:
         union_types = set(exp_type.__args__)
@@ -53,9 +56,11 @@ def _check_union(act_type: Type, exp_type: Type) -> bool:
     return False
 
 
-def _check_tuple(act_type: Type, exp_type: Type) -> bool:
-
-    for tuple_type in exp_type.__args__:
-        print("-->", tuple_type)
+def _check_tuple(act_type: Type, exp_type: Tuple) -> bool:
+    if getattr(act_type, "__origin__", None) in (tuple, Tuple):
+        return all(
+            is_subtype(act, exp)
+            for act, exp in zip(act_type.__args__, exp_type.__args__)
+        )
 
     return False

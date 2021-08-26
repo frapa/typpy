@@ -75,7 +75,7 @@ def parse_scope(
             if hasattr(obj, "__name__"):
                 name = obj.__name__
             # This if for objects from the typing module,
-            # such as Optional
+            # such as Optional or Union
             elif hasattr(obj, "_name"):
                 name = obj._name
             else:

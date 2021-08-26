@@ -1,6 +1,8 @@
 import ast
+import sys
+import inspect
 from dataclasses import dataclass, field
-from typing import List, TypeVar
+from typing import List, TypeVar, Tuple, Any
 
 import pytest
 
@@ -47,3 +49,16 @@ def parametrize_case(*cases: CheckTestCase):
         )(func)
 
     return decorator
+
+
+def _eval_if_py_version(version: Tuple[int, int], code: str) -> List[Any]:
+    major, minor = version
+    if sys.version_info.major == major and sys.version_info.minor == minor:
+        frame = inspect.currentframe().f_back.f_back
+        return [eval(code, frame.f_globals, frame.f_locals)]
+
+    return []
+
+
+def eval_if_3_9(code: str) -> List[Any]:
+    return _eval_if_py_version((3, 9), code)
