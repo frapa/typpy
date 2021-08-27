@@ -4,7 +4,7 @@ from typing import Type, Tuple, Optional, Union, Any
 import pytest
 
 from typpy.is_subtype import is_subtype
-from tests.utils import eval_if_3_9
+from tests.utils import if_py
 
 
 def type_name(_type: Optional[Type]) -> str:
@@ -59,7 +59,9 @@ class IsSubtypeTestCase:
         IsSubtypeTestCase(Any, Any, True),
         # Tuples
         IsSubtypeTestCase(Tuple[int, float], Tuple[int, float], True),
-        *eval_if_3_9("IsSubtypeTestCase(tuple[int, float], Tuple[int, float], True)"),
+        *if_py(
+            ">=3.9", "IsSubtypeTestCase(tuple[int, float], Tuple[int, float], True)"
+        ),
         IsSubtypeTestCase(Tuple[int, float], Tuple[float, float], True),
         IsSubtypeTestCase(Tuple[int, str], Tuple[int, float], False),
         IsSubtypeTestCase(Tuple[int, str], int, False),
