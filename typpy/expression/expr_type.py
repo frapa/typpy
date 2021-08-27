@@ -16,6 +16,16 @@ def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
         # or a tuple of types
         if isinstance(expr.slice, ast.Tuple):
             inner_type = tuple(get_expr_type(elt, scope) for elt in expr.slice.elts)
+        # On python up to 3.8, the inner part was a ast.Index
+        # instead of an ast.Tuple
+        elif isinstance(expr.slice, ast.Index):
+            value = expr.slice.value
+            # e.g. obj[1, 2, 3]
+            if isinstance(value, ast.Tuple):
+                inner_type = tuple(get_expr_type(elt, scope) for elt in value.elts)
+            # e.g. obj[1]
+            else:
+                inner_type = get_expr_type(value, scope)
         else:
             inner_type = get_expr_type(expr.slice, scope)
 

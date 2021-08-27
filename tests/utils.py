@@ -51,7 +51,7 @@ def parametrize_case(*cases: CheckTestCase):
     return decorator
 
 
-def if_py(spec: str, code: str) -> List[Any]:
+def if_py(spec: str, code: Any) -> List[Any]:
     op, minor_str = spec.split("3.")
     minor = int(minor_str)
     operator = {
@@ -65,7 +65,10 @@ def if_py(spec: str, code: str) -> List[Any]:
         return []
 
     if operator(sys.version_info.minor, minor):
-        frame = inspect.currentframe().f_back
-        return [eval(code, frame.f_globals, frame.f_locals)]
+        if isinstance(code, str):
+            frame = inspect.currentframe().f_back
+            return [eval(code, frame.f_globals, frame.f_locals)]
+
+        return [code]
 
     return []

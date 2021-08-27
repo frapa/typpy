@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Type, Any
+from typing import Type, Any, Union, Tuple
 
 import pytest
 
@@ -14,6 +14,8 @@ def add(a: int, b: int) -> int:
 
 @pytest.fixture
 def scope(namespace: Any) -> Scope:
+    namespace.Union = Union
+    namespace.Tuple = Tuple
     namespace.add = add
 
     return parse_scope(namespace)
@@ -35,6 +37,12 @@ class GetExprTypeTestCase:
         GetExprTypeTestCase(case_id="literal_bool", code="True", type=bool),
         GetExprTypeTestCase(case_id="literal_str", code="'string'", type=str),
         GetExprTypeTestCase(case_id="literal_bytes", code="b'bytes'", type=bytes),
+        GetExprTypeTestCase(
+            case_id="subscript_type_union", code="Union[int, str]", type=Union[int, str]
+        ),
+        GetExprTypeTestCase(
+            case_id="subscript_type_tuple", code="Tuple[int, str]", type=Tuple[int, str]
+        ),
         GetExprTypeTestCase(case_id="call", code="add(1, 2)", type=int),
     ],
     ids=lambda case: case.case_id,
