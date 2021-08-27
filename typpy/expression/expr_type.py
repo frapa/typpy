@@ -5,8 +5,14 @@ from typpy.scope import Scope
 
 
 def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
-    if isinstance(expr, ast.Constant):
+    # In python 3.7, constants are NameConstant, Str, Bytes or Num
+    # instead of being a single Constant class
+    if isinstance(expr, (ast.Constant, ast.NameConstant)):
         return type(expr.value)
+    elif isinstance(expr, (ast.Str, ast.Bytes)):
+        return type(expr.s)
+    elif isinstance(expr, ast.Num):
+        return type(expr.n)
     elif isinstance(expr, ast.Name):
         return eval(expr.id)
     elif isinstance(expr, ast.Subscript):

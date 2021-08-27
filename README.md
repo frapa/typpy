@@ -9,7 +9,7 @@ to perform. This particularly includes decorated classes and functions.
 
 ## Requirements
 
-Typpy support Python 3.6 and newer. It does not have dependencies outside
+Typpy support Python 3.7 and newer. It does not have dependencies outside
 the standard library.
 
 ## Quick Start
@@ -22,3 +22,12 @@ typpy path/to/file.py
 
 Currently, typpy is still in a very early stage and only support a limited
 number of type checks. 
+
+## Python version support
+
+Python's `typing` module and the specs are rapidly evolving with each python
+minor version. Therefore, it costs a lot of time to maintain and implement
+support for many python versions.
+
+Since python 3.6 has end-of-life in December 2021, typpy does not support it. 
+We encourage developers to upgrade python to a supported version.
