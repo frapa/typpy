@@ -66,8 +66,11 @@ def increment_version(version, commit_types):
 
     if "breaking_change" in commit_types:
         major += 1
+        minor = 0
+        patch = 0
     elif "feat" in commit_types:
         minor += 1
+        patch = 0
     elif "patch" in commit_types:
         patch += 1
 
