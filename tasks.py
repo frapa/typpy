@@ -1,4 +1,5 @@
 import re
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -111,3 +112,5 @@ def release(ctx, token):
     update_version(new_version_str)
     tag(ctx, new_version_str)
     publish(ctx, token)
+
+    shutil.rmtree(ROOT / "dist")
