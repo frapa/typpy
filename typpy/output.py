@@ -5,7 +5,7 @@ from typpy.error import TypingError
 
 
 # TODO: tests
-def print_errors(errors: List[TypingError]) -> None:
+def print_errors(errors: List[TypingError], print_context: bool = True) -> None:
     last_file = None
 
     num_files = 0
@@ -16,6 +16,15 @@ def print_errors(errors: List[TypingError]) -> None:
             num_files += 1
 
         print(f"  {error.file}:{error.line_number}: {error.message}", file=sys.stderr)
+        if print_context:
+            # TODO: cache text
+            content = error.file.read_text().split("\n")
+            snippet = content[error.line_number - 1]
+
+            length = error.end_column_number - error.column_number
+            cursor = "    " + " " * error.column_number + "~" * length
+
+            print(f"\n    {snippet}\n{cursor}\n")
 
     print()
-    print(f"Found {len(errors)} errors in {num_files} file")
+    print(f"Found {len(errors)} errors in {num_files} files")

@@ -10,6 +10,7 @@ class TypingError:
     file: Path
     line_number: int
     column_number: int
+    end_column_number: int
     message: str
 
     @classmethod
@@ -23,5 +24,6 @@ class TypingError:
             file=scope.file,
             line_number=stmt.lineno,
             column_number=stmt.col_offset,
+            end_column_number=stmt.end_col_offset,
             message=message,
         )
