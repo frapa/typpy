@@ -21,8 +21,14 @@ def print_errors(errors: List[TypingError], print_context: bool = True) -> None:
             content = error.file.read_text().split("\n")
             snippet = content[error.line_number - 1]
 
-            length = error.end_column_number - error.column_number
-            cursor = "    " + " " * error.column_number + "~" * length
+            if error.end_column_number is None:
+                cursor_char = "^"
+                length = 1
+            else:
+                cursor_char = "~"
+                length = error.end_column_number - error.column_number
+
+            cursor = "    " + " " * error.column_number + cursor_char * length
 
             print(f"\n    {snippet}\n{cursor}\n")
 

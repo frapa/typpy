@@ -10,6 +10,7 @@ from typpy.output import print_errors
 from typpy.type_checker import TypeChecker
 from typpy.error import TypingError
 
+
 # TODO: test, docstring
 def run(args: List[str] = None) -> None:
     logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
