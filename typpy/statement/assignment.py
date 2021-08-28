@@ -1,5 +1,5 @@
 import ast
-from typing import List, Union
+from typing import List, Union, Type
 
 from typpy.error import TypingError
 from typpy.expression import check_expression, get_expr_type
@@ -28,11 +28,7 @@ def _check_plain_assignment(stmt: ast.Assign, scope: Scope) -> List[TypingError]
             annotation = scope.resolve_variable(target.id)
             _type = get_expr_type(stmt.value, scope)
             if annotation is not None and not is_subtype(_type, annotation):
-                message = (
-                    f"Expected '{fmt_type(annotation)}' in assignment to '{target.id}', "
-                    f"found '{fmt_type(_type)}'."
-                )
-                return [TypingError.from_scope_stmt(scope, stmt, message)]
+                return [_assignment_error(target.id, _type, annotation, stmt, scope)]
 
             scope.add_variable(target.id, _type)
         elif isinstance(target, ast.Tuple):
@@ -40,11 +36,9 @@ def _check_plain_assignment(stmt: ast.Assign, scope: Scope) -> List[TypingError]
             for elt, elt_type in zip(target.elts, _type.__args__):
                 annotation = scope.resolve_variable(elt.id)
                 if annotation is not None and not is_subtype(_type, annotation):
-                    message = (
-                        f"Expected '{fmt_type(annotation)}' in assignment to '{elt.id}', "
-                        f"found '{fmt_type(elt_type)}'."
-                    )
-                    return [TypingError.from_scope_stmt(scope, stmt, message)]
+                    return [
+                        _assignment_error(elt.id, elt_type, annotation, stmt, scope)
+                    ]
 
                 scope.add_variable(elt.id, elt_type)
         else:
@@ -64,12 +58,22 @@ def _check_annotated_assignment(stmt: ast.AnnAssign, scope: Scope) -> List[Typin
     annotation = get_expr_type(stmt.annotation, scope)
     _type = get_expr_type(stmt.value, scope)
     if not is_subtype(_type, annotation):
-        message = (
-            f"Expected '{fmt_type(annotation)}' in assignment to '{stmt.target.id}', "
-            f"found '{fmt_type(_type)}'."
-        )
-        return [TypingError.from_scope_stmt(scope, stmt, message)]
+        return [_assignment_error(stmt.target.id, _type, annotation, stmt, scope)]
 
     scope.add_variable(stmt.target.id, _type)
 
     return []
+
+
+def _assignment_error(
+    var_name: str,
+    act_type: Type,
+    exp_type: Type,
+    stmt: Union[ast.Assign, ast.AnnAssign],
+    scope: Scope,
+) -> TypingError:
+    message = (
+        f"Expected '{fmt_type(exp_type)}' in assignment to '{var_name}', "
+        f"found '{fmt_type(act_type)}'."
+    )
+    return TypingError.from_scope_stmt(scope, stmt, message)
