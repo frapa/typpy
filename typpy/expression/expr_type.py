@@ -14,7 +14,10 @@ def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
     elif isinstance(expr, ast.Num):
         return type(expr.n)
     elif isinstance(expr, ast.Name):
-        return eval(expr.id)
+        val = scope.resolve_variable(expr.id)
+        if val is None:
+            return eval(expr.id)
+        return val
     elif isinstance(expr, ast.Subscript):
         outer_type, _ = scope.resolve_callable(expr.value.id)
 
