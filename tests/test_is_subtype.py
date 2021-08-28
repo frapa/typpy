@@ -4,22 +4,8 @@ from typing import Type, Tuple, Optional, Union, Any
 import pytest
 
 from typpy.is_subtype import is_subtype
+from typpy.format import fmt_type
 from tests.utils import if_py
-
-
-def type_name(_type: Optional[Type]) -> str:
-    if _type is None:
-        return "None"
-
-    # This if for objects from the typing module,
-    # such as Optional or Union
-    if hasattr(_type, "_name"):
-        return str(_type).replace("typing.", "")
-
-    if "<class" in str(_type):
-        return _type.__name__
-
-    return str(_type)
 
 
 @dataclass(frozen=True)
@@ -78,7 +64,7 @@ class IsSubtypeTestCase:
         # Since is a subclass if float, it should be accepted
         IsSubtypeTestCase(bool, Union[float, bytes], True),
     ],
-    ids=lambda case: f"{type_name(case.actual)}-{type_name(case.expected)}-{case.result}",
+    ids=lambda case: f"{fmt_type(case.actual)}-{fmt_type(case.expected)}-{case.result}",
 )
 def test_is_subtype(case: IsSubtypeTestCase):
     assert is_subtype(case.actual, case.expected) == case.result
