@@ -7,7 +7,7 @@ ROOT = Path(__file__).parent
 
 setup(
     name="typpy",
-    version="0.3.0",
+    version="0.4.0",
     description="Python Type Checker",
     long_description=(ROOT / "README.md").read_text(),
     long_description_content_type="text/markdown",
