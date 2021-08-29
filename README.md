@@ -9,8 +9,7 @@ to perform. This particularly includes decorated classes and functions.
 
 ## Requirements
 
-Typpy support Python 3.7 and newer. It does not have dependencies outside
-the standard library.
+Typpy support Python 3.7 and newer.
 
 ## Quick Start
 
@@ -21,7 +20,15 @@ typpy path/to/file.py
 ## Status
 
 Currently, typpy is still in a very early stage and only support a limited
-number of type checks. 
+number of type checks:
+
+ - Variable assignments
+ - Function calls
+
+Typpy right now even crashes on certain source code inputs. I'm adding support
+for different python constructs such as comparison expressions, classes, import
+statements and so on. I expect typpy to be able to check most real world code
+in the next few weeks.
 
 ## Python version support
 

@@ -1,6 +1,8 @@
 import sys
 from typing import List
 
+from colorama import Fore, Style
+
 from typpy.error import TypingError
 
 
@@ -11,11 +13,17 @@ def print_errors(errors: List[TypingError], print_context: bool = True) -> None:
     num_files = 0
     for error in errors:
         if error.file != last_file:
-            print(error.file, file=sys.stderr)
+            print(f"{Style.BRIGHT}{error.file}{Style.RESET_ALL}", file=sys.stderr)
             last_file = error.file
             num_files += 1
 
-        print(f"  {error.file}:{error.line_number}: {error.message}", file=sys.stderr)
+        print(
+            (
+                f"  {error.file}:{error.line_number}: "
+                f"{Style.BRIGHT}{error.message}{Style.RESET_ALL}"
+            ),
+            file=sys.stderr,
+        )
         if print_context:
             # TODO: cache text
             content = error.file.read_text().split("\n")
@@ -40,7 +48,8 @@ def print_errors(errors: List[TypingError], print_context: bool = True) -> None:
                 f"\n"
                 f"    {line_number_offset}|\n"
                 f"    {str_line_number}| {snippet}\n"
-                f"    {line_number_offset}| {cursor}\n"
+                f"    {line_number_offset}| "
+                f"{Style.BRIGHT}{Fore.RED}{cursor}{Style.RESET_ALL}\n"
             )
 
     print()

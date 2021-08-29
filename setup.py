@@ -32,4 +32,5 @@ setup(
     entry_points={
         "console_scripts": ["typpy=typpy.__main__:run"],
     },
+    install_requires=["colorama~=0.4"],
 )
