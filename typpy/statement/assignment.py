@@ -28,7 +28,9 @@ def _check_plain_assignment(stmt: ast.Assign, scope: Scope) -> List[TypingError]
             annotation = scope.resolve_variable(target.id)
             _type = get_expr_type(stmt.value, scope)
             if annotation is not None and not is_subtype(_type, annotation):
-                return [_assignment_error(target.id, _type, annotation, stmt, scope)]
+                return [
+                    _assignment_error(target.id, _type, annotation, stmt.value, scope)
+                ]
 
             scope.add_variable(target.id, _type)
         elif isinstance(target, ast.Tuple):
@@ -37,7 +39,9 @@ def _check_plain_assignment(stmt: ast.Assign, scope: Scope) -> List[TypingError]
                 annotation = scope.resolve_variable(elt.id)
                 if annotation is not None and not is_subtype(_type, annotation):
                     return [
-                        _assignment_error(elt.id, elt_type, annotation, stmt, scope)
+                        _assignment_error(
+                            elt.id, elt_type, annotation, stmt.value, scope
+                        )
                     ]
 
                 scope.add_variable(elt.id, elt_type)
@@ -58,7 +62,7 @@ def _check_annotated_assignment(stmt: ast.AnnAssign, scope: Scope) -> List[Typin
     annotation = get_expr_type(stmt.annotation, scope)
     _type = get_expr_type(stmt.value, scope)
     if not is_subtype(_type, annotation):
-        return [_assignment_error(stmt.target.id, _type, annotation, stmt, scope)]
+        return [_assignment_error(stmt.target.id, _type, annotation, stmt.value, scope)]
 
     scope.add_variable(stmt.target.id, _type)
 
@@ -74,6 +78,7 @@ def _assignment_error(
 ) -> TypingError:
     message = (
         f"Expected '{fmt_type(exp_type)}' in assignment to '{var_name}', "
-        f"found '{fmt_type(act_type)}'."
+        f"found '{fmt_type(act_type)}'"
     )
-    return TypingError.from_scope_stmt(scope, stmt, message)
+    code_message = f"Expected '{fmt_type(exp_type)}', found '{fmt_type(act_type)}'"
+    return TypingError.from_scope_stmt(scope, stmt, message, code_message)

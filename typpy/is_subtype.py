@@ -1,3 +1,4 @@
+import warnings
 from typing import Type, Union, Tuple, Any, Optional
 from inspect import isclass
 
@@ -39,7 +40,7 @@ def is_subtype(act_type: Optional[Type], exp_type: Optional[Type]) -> bool:
         # and ext_type is not. This is always False.
         return False
 
-    raise NotImplementedError(f"is_subtype() for type {exp_type} is not implemented")
+    warnings.warn(f"is_subtype() for type {exp_type} is not implemented")
 
 
 def _check_union(act_type: Type, exp_type: Union) -> bool:

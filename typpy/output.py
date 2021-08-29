@@ -30,7 +30,11 @@ def print_errors(errors: List[TypingError], print_context: bool = True) -> None:
 
             str_line_number = str(error.line_number)
             line_number_offset = " " * len(str_line_number)
-            cursor = " " * error.column_number + cursor_char * length
+            cursor = (
+                " " * error.column_number
+                + cursor_char * length
+                + f" {error.code_message}"
+            )
 
             print(
                 f"\n"

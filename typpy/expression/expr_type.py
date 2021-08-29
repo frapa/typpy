@@ -1,4 +1,5 @@
 import ast
+import warnings
 from typing import Type, Tuple
 
 from typpy.scope import Scope
@@ -50,4 +51,4 @@ def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
         types = [get_expr_type(elt, scope) for elt in expr.elts]
         return Tuple[tuple(types)]
 
-    raise NotImplementedError(f"expression type for {expr} is not implemented")
+    warnings.warn(f"expression type for {expr} is not implemented")
