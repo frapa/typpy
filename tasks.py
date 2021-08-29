@@ -89,6 +89,7 @@ def tag(ctx, version):
     ctx.run("git add .")
     ctx.run(f"git commit -m 'Release v{version}'")
     ctx.run(f"git tag v{version}")
+    ctx.run("git push --tags")
 
 
 def publish(ctx, token):
