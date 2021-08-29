@@ -37,4 +37,4 @@ minor version. Therefore, it costs a lot of time to maintain and implement
 support for many python versions.
 
 Since python 3.6 has end-of-life in December 2021, typpy does not support it. 
-We encourage developers to upgrade python to a supported version.
+I encourage developers to upgrade python to a supported version.
