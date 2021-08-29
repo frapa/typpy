@@ -4,7 +4,7 @@ from typing import Any, Optional, Dict, Type, Union
 import pytest
 
 from typpy.scope import Scope, parse_scope
-from typpy.statement import check_assignment
+from typpy.statement.assignment import check_assignment
 from typpy.is_subtype import is_subtype
 from ..utils import ast_parse_assignment, CheckTestCase, parametrize_case
 

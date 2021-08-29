@@ -1,5 +1,5 @@
-from typpy.statement.assignment import check_assignment
+from typpy.statement.check import check_statement
 
 __all__ = [
-    "check_assignment",
+    "check_statement",
 ]

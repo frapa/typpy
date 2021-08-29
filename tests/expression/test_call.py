@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import pytest
 
 from typpy.scope import Scope, parse_scope
-from typpy.expression import check_call
+from typpy.expression.call import check_call
 from ..utils import ast_parse_call, CheckTestCase, parametrize_case
 
 

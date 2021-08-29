@@ -10,10 +10,9 @@ from pathlib import Path
 from typing import Iterable, Generator, Any, List
 
 from typpy.error import TypingError
-from typpy.expression import check_expression
 from typpy.resolver import Resolver
 from typpy.scope import Scope, parse_scope
-from typpy.statement import check_assignment
+from typpy.statement import check_statement
 
 
 @dataclass(frozen=True)
@@ -85,7 +84,7 @@ class TypeChecker:
 
         errors = []
         for stmt in tree.body:
-            new_errors = self._check_statement(stmt, scope)
+            new_errors = check_statement(stmt, scope)
             errors.extend(new_errors)
 
         # Check sub-scopes
@@ -95,27 +94,5 @@ class TypeChecker:
             errors.extend(new_errors)
 
         logging.debug("obj: %s - scope: %s" % (obj.__name__, scope))
-
-        return errors
-
-    def _check_statement(self, stmt: ast.stmt, scope: Scope) -> List[TypingError]:
-        logging.debug("stmt: %s" % stmt)
-
-        # These two are already evaluated by the module import
-        # and are retrieved dynamically instead of parsed.
-        if isinstance(stmt, (ast.ClassDef, ast.FunctionDef)):
-            return []
-
-        errors = []
-        if isinstance(stmt, ast.If):
-            errors = check_expression(stmt.test, scope)
-        elif isinstance(stmt, (ast.Assign, ast.AnnAssign)):
-            errors = check_assignment(stmt, scope)
-        elif isinstance(stmt, ast.Expr):
-            errors = check_expression(stmt.value, scope)
-
-        for sub_stmt in getattr(stmt, "body", []):
-            new_errors = self._check_statement(sub_stmt, scope)
-            errors.extend(new_errors)
 
         return errors
