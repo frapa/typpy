@@ -7,6 +7,21 @@ but instead of statically checking the code, it dynamically imports the
 modules and is therefore able to perform type check that mypy is unable
 to perform. This particularly includes decorated classes and functions.
 
+## Goals
+
+Why another python type checker? 
+
+ - Check most python source files, even if not explicitly
+   annotated. Try to extract typing information if not available.
+ - Strict mode by default. Ensure your code is typed, but do not require
+   dependencies to be typed. Our philosophy is that each line of code
+   that is not type checked can contain a bug or error.
+ - Support gradual typing as an option.
+ - Support dynamic python constructs such as decorators. We make
+   heavy use of them and annotating them right is a pain. Typpy tries
+   to check typing even without decorator annotations.
+ - Provide great error messages.
+
 ## Requirements
 
 Typpy support Python 3.7 and newer.
