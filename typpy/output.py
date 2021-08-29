@@ -28,9 +28,16 @@ def print_errors(errors: List[TypingError], print_context: bool = True) -> None:
                 cursor_char = "~"
                 length = error.end_column_number - error.column_number
 
-            cursor = "    " + " " * error.column_number + cursor_char * length
+            str_line_number = str(error.line_number)
+            line_number_offset = " " * len(str_line_number)
+            cursor = " " * error.column_number + cursor_char * length
 
-            print(f"\n    {snippet}\n{cursor}\n")
+            print(
+                f"\n"
+                f"    {line_number_offset}|\n"
+                f"    {str_line_number}| {snippet}\n"
+                f"    {line_number_offset}| {cursor}\n"
+            )
 
     print()
     print(f"Found {len(errors)} errors in {num_files} files")
