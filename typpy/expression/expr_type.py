@@ -1,6 +1,6 @@
 import ast
 import warnings
-from typing import Type, Tuple
+from typing import Type, Tuple, List, Dict, Union, Set, Optional, Iterable, Any
 
 from typpy.scope import Scope
 
@@ -41,7 +41,7 @@ def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
 
         return outer_type[inner_type]
     elif isinstance(expr, ast.Call):
-        _, signature = scope.resolve_callable(expr.func.id)
+        cb, signature = scope.resolve_callable(expr.func.id)
         if signature is None:
             # TODO: error reporting
             pass
@@ -50,5 +50,40 @@ def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
     elif isinstance(expr, ast.Tuple):
         types = [get_expr_type(elt, scope) for elt in expr.elts]
         return Tuple[tuple(types)]
+    elif isinstance(expr, ast.List):
+        return _resolve_union(List, expr.elts, scope)
+    elif isinstance(expr, ast.Dict):
+        key_types = {get_expr_type(key, scope) for key in expr.keys}
+        value_types = {get_expr_type(value, scope) for value in expr.values}
 
-    warnings.warn(f"expression type for {expr} is not implemented")
+        if not key_types:
+            return Dict
+
+        if len(key_types) == 1:
+            key_type = key_types.pop()
+        else:
+            key_type = Union[tuple(key_types)]
+
+        if len(value_types) == 1:
+            value_type = value_types.pop()
+        else:
+            value_type = Union[tuple(value_types)]
+
+        return Dict[key_type, value_type]
+    elif isinstance(expr, ast.Set):
+        return _resolve_union(Set, expr.elts, scope)
+
+    warnings.warn(
+        f"expression type for {expr} is not implemented. Contact us for a fix."
+    )
+
+
+def _resolve_union(parent: Type, values: Iterable[Any], scope: Scope) -> Type:
+    types = {get_expr_type(value, scope) for value in values}
+
+    if not types:
+        return parent
+    elif len(types) == 1:
+        return parent[types.pop()]
+
+    return parent[Union[tuple(types)]]

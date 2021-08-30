@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Type, Any, Union, Tuple
+from typing import Type, Any, Union, Tuple, List, Dict, Set
 
 import pytest
 
@@ -37,6 +37,30 @@ class GetExprTypeTestCase:
         GetExprTypeTestCase(case_id="literal_bool", code="True", type=bool),
         GetExprTypeTestCase(case_id="literal_str", code="'string'", type=str),
         GetExprTypeTestCase(case_id="literal_bytes", code="b'bytes'", type=bytes),
+        GetExprTypeTestCase(
+            case_id="literal_tuple", code="(1, '2')", type=Tuple[int, str]
+        ),
+        GetExprTypeTestCase(case_id="list_empty", code="[]", type=List),
+        GetExprTypeTestCase(case_id="list_func", code="list()", type=List),
+        GetExprTypeTestCase(case_id="list_uniform", code="[1, 2]", type=List[int]),
+        GetExprTypeTestCase(
+            case_id="list_union", code="[1, '2']", type=List[Union[int, str]]
+        ),
+        GetExprTypeTestCase(case_id="dict_empty", code="{}", type=Dict),
+        GetExprTypeTestCase(case_id="dict_func", code="dict()", type=Dict),
+        GetExprTypeTestCase(
+            case_id="dict_uniform", code="{'a': 1, 'b': 2}", type=Dict[str, int]
+        ),
+        GetExprTypeTestCase(
+            case_id="dict_typed",
+            code="{'a': 1, 'b': [1]}",
+            type=Dict[str, Union[int, List[int]]],
+        ),
+        GetExprTypeTestCase(case_id="set_empty", code="set()", type=Set),
+        GetExprTypeTestCase(case_id="set_uniform", code="{1, 2, 3}", type=Set[int]),
+        GetExprTypeTestCase(
+            case_id="set_union", code="{1, '2', 3.0}", type=Set[Union[int, str, float]]
+        ),
         GetExprTypeTestCase(
             case_id="subscript_type_union", code="Union[int, str]", type=Union[int, str]
         ),
