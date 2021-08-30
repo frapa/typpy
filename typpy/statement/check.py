@@ -25,7 +25,9 @@ def check_statement(stmt: ast.stmt, scope: Scope) -> List[TypingError]:
     elif isinstance(stmt, ast.Expr):
         errors = check_expression(stmt.value, scope)
     else:
-        warnings.warn(f"check for statement {stmt} is not implemented")
+        warnings.warn(
+            f"check for statement {stmt} is not implemented. Contact us for a fix."
+        )
 
     for sub_stmt in getattr(stmt, "body", []):
         new_errors = check_statement(sub_stmt, scope)

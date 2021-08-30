@@ -47,7 +47,8 @@ def _check_plain_assignment(stmt: ast.Assign, scope: Scope) -> List[TypingError]
                 scope.add_variable(elt.id, elt_type)
         else:
             raise NotImplementedError(
-                f"assignment for target {target} is not implemented"
+                f"assignment for target {target} is not implemented. "
+                f"Contact us for a fix."
             )
 
     return []
@@ -56,7 +57,8 @@ def _check_plain_assignment(stmt: ast.Assign, scope: Scope) -> List[TypingError]
 def _check_annotated_assignment(stmt: ast.AnnAssign, scope: Scope) -> List[TypingError]:
     if not isinstance(stmt.target, ast.Name):
         raise NotImplementedError(
-            f"assignment for target {stmt.target} is not implemented"
+            f"assignment for target {stmt.target} is not implemented. "
+            f"Contact us for a fix."
         )
 
     annotation = get_expr_type(stmt.annotation, scope)

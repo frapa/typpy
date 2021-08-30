@@ -18,6 +18,8 @@ def check_expression(expr: ast.expr, scope: Scope) -> List[TypingError]:
         new_errors = check_call(expr, scope)
         errors.extend(new_errors)
     else:
-        warnings.warn(f"check for expression {expr} is not implemented")
+        warnings.warn(
+            f"check for expression {expr} is not implemented. Contact us for a fix."
+        )
 
     return errors

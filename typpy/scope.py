@@ -80,7 +80,8 @@ def parse_scope(
                 name = obj._name
             else:
                 raise NotImplementedError(
-                    f"name retrieval for callable '{obj}' is not implemented"
+                    f"name retrieval for callable '{obj}' is not implemented. "
+                    f"Contact us for a fix."
                 )
 
             scope.add_callable(name, obj, signature)
