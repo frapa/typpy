@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import ast
 import sys
 import inspect
 from dataclasses import dataclass, field
-from typing import List, TypeVar, Any
+from typing import TypeVar, Any
 
 import pytest
 
@@ -34,7 +36,7 @@ def ast_parse_call(code: str) -> ast.Call:
 class CheckTestCase:
     case_id: str
     code: str
-    errors: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
 
 
 T = TypeVar("T")
@@ -51,7 +53,7 @@ def parametrize_case(*cases: CheckTestCase):
     return decorator
 
 
-def if_py(spec: str, code: Any) -> List[Any]:
+def if_py(spec: str, code: Any) -> list[Any]:
     op, minor_str = spec.split("3.")
     minor = int(minor_str)
     operator = {

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import ast
 import warnings
-from typing import Type, Tuple, List, Dict, Union, Set, Optional, Iterable, Any
+from typing import Type, Union, Iterable, Any
 
 from typpy.scope import Scope
 
@@ -46,18 +48,22 @@ def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
             # TODO: error reporting
             pass
 
+        # The annotation can also be a string
+        if isinstance(signature.return_annotation, str):
+            return eval(signature.return_annotation)
+
         return signature.return_annotation
     elif isinstance(expr, ast.Tuple):
         types = [get_expr_type(elt, scope) for elt in expr.elts]
-        return Tuple[tuple(types)]
+        return tuple[tuple(types)]
     elif isinstance(expr, ast.List):
-        return _resolve_union(List, expr.elts, scope)
+        return _resolve_union(list, expr.elts, scope)
     elif isinstance(expr, ast.Dict):
         key_types = {get_expr_type(key, scope) for key in expr.keys}
         value_types = {get_expr_type(value, scope) for value in expr.values}
 
         if not key_types:
-            return Dict
+            return dict
 
         if len(key_types) == 1:
             key_type = key_types.pop()
@@ -69,9 +75,9 @@ def get_expr_type(expr: ast.expr, scope: Scope) -> Type:
         else:
             value_type = Union[tuple(value_types)]
 
-        return Dict[key_type, value_type]
+        return dict[key_type, value_type]
     elif isinstance(expr, ast.Set):
-        return _resolve_union(Set, expr.elts, scope)
+        return _resolve_union(set, expr.elts, scope)
 
     warnings.warn(
         f"expression type for {expr} is not implemented. Contact us for a fix."

@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import sys
-from typing import List
 
 from colorama import Fore, Style
 
@@ -7,7 +8,7 @@ from typpy.error import TypingError
 
 
 # TODO: tests
-def print_errors(errors: List[TypingError], print_context: bool = True) -> None:
+def print_errors(errors: list[TypingError], print_context: bool = True) -> None:
     last_file = None
 
     num_files = 0

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
-from typing import Any, Optional, Dict, Type, Union
+from typing import Any, Optional, Type, Union
 
 import pytest
 
@@ -20,7 +22,7 @@ def scope(namespace: Any) -> Scope:
 @dataclass(frozen=True)
 class CheckAssignmentTestCase(CheckTestCase):
     pre_code: str = ""
-    variables: Dict[str, Type] = field(default_factory=dict)
+    variables: dict[str, Type] = field(default_factory=dict)
 
 
 @parametrize_case(

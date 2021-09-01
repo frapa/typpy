@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import warnings
-from typing import Type, Union, Tuple, Any, Optional
+from typing import Type, Union, Any, Optional, Tuple
 from inspect import isclass
 
 
@@ -7,6 +9,11 @@ from inspect import isclass
 def is_subtype(act_type: Optional[Type], exp_type: Optional[Type]) -> bool:
     act_type = type(None) if act_type is None else act_type
     exp_type = type(None) if exp_type is None else exp_type
+
+    if isinstance(act_type, str):
+        act_type = eval(act_type)
+    if isinstance(exp_type, str):
+        exp_type = eval(exp_type)
 
     # optimization for common use case
     if act_type is exp_type:
@@ -60,7 +67,7 @@ def _check_union(act_type: Type, exp_type: Union) -> bool:
     return False
 
 
-def _check_tuple(act_type: Type, exp_type: Tuple) -> bool:
+def _check_tuple(act_type: Type, exp_type: tuple) -> bool:
     if getattr(act_type, "__origin__", None) in (tuple, Tuple):
         return all(
             is_subtype(act, exp)

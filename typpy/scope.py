@@ -1,5 +1,19 @@
+from __future__ import annotations
+
 import inspect
-from typing import Any, Optional, Type, Dict, Tuple
+from typing import Any, Optional, Type
+import warnings
+from functools import lru_cache
+
+
+@lru_cache(maxsize=None)
+def get_builtin_scope() -> "Scope":
+    class BuiltinContainer:
+        def __init__(self):
+            self.__dict__ = __builtins__
+            self.__name__ = "BuiltinContainer"
+
+    return parse_scope(BuiltinContainer())
 
 
 class Scope:
@@ -13,11 +27,15 @@ class Scope:
 
         self.file = None
         self.qualified_name = None
-        if parent is not None:
+        if parent is None:
+            # Avoid recursion
+            if name != "BuiltinContainer":
+                self.parent = get_builtin_scope()
+        else:
             self.file = parent.file
             self.qualified_name = f"{parent.qualified_name}.{name}"
 
-        self.variables: Dict[str, Type] = {}
+        self.variables: dict[str, Type] = {}
         self.types = {}
         self.callables = {}
 
@@ -34,7 +52,7 @@ class Scope:
     def add_callable(self, name: str, obj: Any, cb: inspect.Signature) -> None:
         self.callables[name] = (obj, cb)
 
-    def resolve_callable(self, name: str) -> Optional[Tuple[Any, inspect.Signature]]:
+    def resolve_callable(self, name: str) -> Optional[tuple[Any, inspect.Signature]]:
         obj, cb = self.callables.get(name, (None, None))
 
         if cb is None and self.parent is not None:
@@ -43,7 +61,7 @@ class Scope:
         return obj, cb
 
     @staticmethod
-    def _format_dict(dictionary: Dict[str, Any]) -> str:
+    def _format_dict(dictionary: dict[str, Any]) -> str:
         if dictionary:
             items = ",\n    ".join(dictionary.keys())
             return f"\n    {items}\n  "
@@ -68,22 +86,16 @@ def parse_scope(
     """Populate scope with all existing symbols."""
     scope = Scope(container.__name__, parent_scope)
 
-    for symbol, obj in container.__dict__.items():
+    objects = dict(container.__dict__)
+    for symbol, obj in objects.items():
         if callable(obj):
-            signature = inspect.signature(obj)
+            try:
+                signature = inspect.signature(obj)
+            except ValueError:
+                # This happens for certain builtin magic stuff
+                warnings.warn(f"inspect.signature does not work for {obj}")
+                continue
 
-            if hasattr(obj, "__name__"):
-                name = obj.__name__
-            # This if for objects from the typing module,
-            # such as Optional or Union
-            elif hasattr(obj, "_name"):
-                name = obj._name
-            else:
-                raise NotImplementedError(
-                    f"name retrieval for callable '{obj}' is not implemented. "
-                    f"Contact us for a fix."
-                )
-
-            scope.add_callable(name, obj, signature)
+            scope.add_callable(symbol, obj, signature)
 
     return scope

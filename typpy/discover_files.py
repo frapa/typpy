@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from glob import glob
 from pathlib import Path
-from typing import List, Iterable
+from typing import Iterable
 
 
 # TODO: test, docstring
-def find_files(glob_patterns: List[str]) -> Iterable[Path]:
+def find_files(glob_patterns: list[str]) -> Iterable[Path]:
     for glob_pattern in glob_patterns:
         yield from _expand_glob(glob_pattern)
 

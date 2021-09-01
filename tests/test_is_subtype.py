@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Type, Tuple, Optional, Union, Any
+from typing import Type, Optional, Union, Any
 
 import pytest
 
@@ -41,16 +43,16 @@ class IsSubtypeTestCase:
         # Any should always return True
         IsSubtypeTestCase(None, Any, True),
         IsSubtypeTestCase(int, Any, True),
-        IsSubtypeTestCase(Tuple[int, float], Any, True),
+        IsSubtypeTestCase(tuple[int, float], Any, True),
         IsSubtypeTestCase(Any, Any, True),
         # Tuples
-        IsSubtypeTestCase(Tuple[int, float], Tuple[int, float], True),
+        IsSubtypeTestCase(tuple[int, float], tuple[int, float], True),
         *if_py(
-            ">=3.9", "IsSubtypeTestCase(tuple[int, float], Tuple[int, float], True)"
+            ">=3.9", "IsSubtypeTestCase(tuple[int, float], tuple[int, float], True)"
         ),
-        IsSubtypeTestCase(Tuple[int, float], Tuple[float, float], True),
-        IsSubtypeTestCase(Tuple[int, str], Tuple[int, float], False),
-        IsSubtypeTestCase(Tuple[int, str], int, False),
+        IsSubtypeTestCase(tuple[int, float], tuple[float, float], True),
+        IsSubtypeTestCase(tuple[int, str], tuple[int, float], False),
+        IsSubtypeTestCase(tuple[int, str], int, False),
         # Union types
         IsSubtypeTestCase(Optional[int], Optional[int], True),
         IsSubtypeTestCase(None, Optional[int], True),

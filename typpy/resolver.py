@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 from functools import lru_cache
 from pathlib import Path
-from typing import Tuple
 
 
 class Resolver:
@@ -16,7 +17,7 @@ class Resolver:
 
     # See comment above
     @lru_cache(maxsize=None)
-    def resolve(self, path: Path, _check_path: bool = True) -> Tuple[str, Path]:
+    def resolve(self, path: Path, _check_path: bool = True) -> tuple[str, Path]:
         """Resolve paths into fully qualified module names.
 
         :param path: A path to a file or directory.
